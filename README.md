@@ -29,7 +29,7 @@
 
 
 ## Features
-###Functional
+### Functional
 - Only Authenticated Users allowed (AES Encryption and Base64 encoding to store in DB)
 - Users need to authorize for viewing/updating other user's data(Only Admins allowed)
 - User can create loan with term and amount data only
@@ -37,7 +37,7 @@
 - User CRUD operations
 - Loan Create/View/Repay/Approve operations
 - Custom Exceptions for any Violations (e.g. Customer trying to approve a loan, or, Customer requesting to view other user's data)
-###Non-Functional
+### Non-Functional
 - Modular Design with User and Loan resources
 - REST API architecture followed for seamless integration
 - JUnit test cases with Mockito
@@ -45,11 +45,11 @@
 - Script to install the app anywhere seamlessly
 
 ## Setup
-####Requirements
+#### Requirements
 - JDK 11 (references above)
 - MySQL (references above)
 
-####Dependencies
+#### Dependencies
 - Spring-Boot 2.7.0
 - Maven 
 - Lombok
@@ -58,10 +58,10 @@
 
 All these dependencies can be found in application directory 'loan' at the path : /loan/pom.xml . 
 Running the script will take care of the dependencies and loan application installation (except Java and MySQL, which needs to be installed manually). 
-####Prerequisites
+#### Prerequisites
 -  Java 11 and MySQL should be installed or it returns error if not found
 
-###Run the Script
+### Run the Script
 - Single step of running this script will launch the loan application on your localhost at port 8080.
 - On Terminal/Shell, `cd` into the `executables` folder containing `loanAppInstallScript.sh` file.
 - Now run the `loanAppInstallScript.sh` file by using following command:
@@ -69,10 +69,10 @@ Running the script will take care of the dependencies and loan application insta
   Alternatively, use `sh loanAppInstallScript.sh`
 - Enter MySQL password for the user created as directed below in [Usage](#usage).
 
-###Steps followed in the Script
+### Steps followed in the Script
 - Drops any existing MySQL database and MySQL user('aspire_root_loan_user') if already exists, to avoid duplication errors
 - Creates a new MySQL user('aspire_root_loan_user') with password('aspire@1') along with the new database(aspire_loan)
-  #####application.properties
+  ##### application.properties
     ```spring.datasource.url=jdbc:mysql://localhost:3306/aspire_loan
     spring.datasource.username=root
     spring.datasource.password=aspire@1
@@ -86,7 +86,7 @@ Running the script will take care of the dependencies and loan application insta
 - Grants all privileges on database 'aspire_loan' to our created user 'aspire_root_loan_user'
  
 - Runs the following commands to create `MySQL tables`:
-####`1. Users Table`
+#### `1. Users Table`
 ```CREATE TABLE `users` (
    `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
    `created_at_timestamp` datetime NOT NULL,
@@ -95,7 +95,7 @@ Running the script will take care of the dependencies and loan application insta
    `user_type` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`user_id`)
  )```
- ####`2. Loan Table`
+ #### `2. Loan Table`
  ```CREATE TABLE `customer_loan_info` (
       `loan_id` bigint(20) NOT NULL AUTO_INCREMENT,
       `loan_amount` double NOT NULL,
@@ -104,7 +104,7 @@ Running the script will take care of the dependencies and loan application insta
       `loan_term` int(11) NOT NULL,
       PRIMARY KEY (`loan_id`)
     )```
-####`3. User_Loan Table`
+#### `3. User_Loan Table`
 ```CREATE TABLE `customer_loans` (
      `user_id` bigint(20) NOT NULL,
      `loan_id` bigint(20) NOT NULL,
@@ -113,7 +113,7 @@ Running the script will take care of the dependencies and loan application insta
      CONSTRAINT `FK7q8r3xej1bgyy7mgas4dq21wc` FOREIGN KEY (`loan_id`) REFERENCES `customer_loan_info` (`loan_id`),
      CONSTRAINT `FKapypo2qtr2ww0xoqrxbf24g0u` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
    )```
-####`4. Repayment_Info Table`
+#### `4. Repayment_Info Table`
 ```CREATE TABLE `loan_repayment_info` (
      `loan_repayment_id` bigint(20) NOT NULL AUTO_INCREMENT,
      `total_repayment_amount` double DEFAULT NULL,
@@ -122,7 +122,7 @@ Running the script will take care of the dependencies and loan application insta
      `repayment_status` varchar(255) DEFAULT NULL,
      PRIMARY KEY (`loan_repayment_id`)
    )```
-####`5. Loan_Repayments table`
+#### `5. Loan_Repayments table`
 ```CREATE TABLE `loan_repayments` (
      `loan_id` bigint(20) NOT NULL,
      `loan_repayment_id` bigint(20) NOT NULL,
@@ -145,7 +145,7 @@ Running the script will take care of the dependencies and loan application insta
 - Script will run all the commands successfully and display on client's terminal when the application jar is launched
 - Client may lookup the REST APIs exposed on Swagger Documentation (http://localhost:8080/aspire/loan_app/swagger-ui/index.html#/)
 
-###Common Errors And Resolution
+### Common Errors And Resolution
 
 `/org.springframework.boot.web.server.PortInUseException: Port 8080 is already in use`
 
@@ -157,7 +157,7 @@ This command fetches multiple processes running at port 8080. Fetch all process 
 - Now try re-running the script, it should run.
 
 
-###APIs
+### APIs
 - Please make sure all POST/PUT API requests are sent with `Content-Type: application/json` in the Header.
 - All user apis except create user(POST /users) would require an Authentication_id(the user id whi is requesting data) and Authentication_password(request user's password in order to authenticate the user against saved password in the system);
 - An example: If a user with Id 1 wants to fetch user info for userId 2 (please make sure the user entries are existing in the database), follow following details:
@@ -313,7 +313,7 @@ Please see, any new user being added is always fixed as a customer.
 - For more APIs, please follow the Swagger link provided above.
 - Please Note, a single repayment request(`http://localhost:8080/aspire/loan_app/loans/{loanId}/{amount}/repayment`) (irrespective of amount field in the request)
 will always only pay the single pending weekly installment. So, to pay entire loan, we must send requests for total number of terms(eg. 3 in above example with LoanId 1);
-##CustomExceptions
+## CustomExceptions
 ```
 * UserNotAuthenticatedException(HttpStatus.UNAUTHORIZED)
 * UserNotAuthorizedException(HttpStatus.FORBIDDEN)
